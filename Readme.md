@@ -12,7 +12,7 @@ cargo run
 ## Now go to your browser and check localhost:8080
 
 [x] basic http server 
-[ ] implement multithreading
+[x] implement multithreading
 [ ] refactor with Asynchronous code
 [ ] Routing System 
 [ ] Serve static files
