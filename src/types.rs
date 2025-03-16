@@ -3,23 +3,9 @@ use std::collections::HashMap;
 pub struct Request {
     pub method: String,
     pub path: String,
-    pub headers: HashMap<String,String>,
-    pub params: HashMap<String,String>,
+    pub headers: HashMap<String, String>,
     pub body: Vec<u8>,
-    pub extensions: HashMap<String, Box<dyn std::any::Any + Send + 'static>>
-}
-
-impl Request {
-    pub fn new(method: String, path: String) -> Self{
-        Request{
-            method,
-            path,
-            headers: HashMap::new(),
-            params: HashMap::new(),
-            body: Vec::new(),
-            extensions: HashMap::new()
-        }
-    }
+    pub params: HashMap<String, String>,
 }
 
 pub struct Response {
@@ -37,34 +23,6 @@ impl Response {
         }
     }
 
-    pub fn html(content: &str) -> Self {
-        let mut response = Response::new();
-        response.headers.insert("Content-Type".to_string(), "text/html".to_string());
-        response.body = content.as_bytes().to_vec();
-        response
-    }
-
-    pub fn json(content: String) -> Self {
-        let mut response = Response::new();
-        response.headers.insert("Content-Type".to_string(), "application/json".to_string());
-        response.body = content.as_bytes().to_vec();
-        response
-    }
-
-    pub fn not_found() -> Self {
-        let mut response = Response::new();
-        response.status = 404;
-        response.body = b"404 Not Found".to_vec();
-        response
-    }
-
-    pub fn unauthorized() -> Self {
-        let mut response = Response::new();
-        response.status = 401;
-        response.body = b"401 Unauthorized".to_vec();
-        response
-    }
-
     pub fn with_status(mut self, status: u16) -> Self {
         self.status = status;
         self
@@ -75,8 +33,38 @@ impl Response {
         self
     }
 
-    pub fn with_body(mut self, body: Vec<u8>) -> Self {
+    pub fn with_body(mut self, body: &str) -> Self {
+        self.body = body.as_bytes().to_vec();
+        self
+    }
+
+    pub fn with_body_bytes(mut self, body: Vec<u8>) -> Self {
         self.body = body;
         self
+    }
+
+    pub fn html(content: &str) -> Self {
+        Response::new()
+            .with_header("Content-Type", "text/html")
+            .with_body(content)
+    }
+
+    pub fn text(content: &str) -> Self {
+        Response::new()
+            .with_header("Content-Type", "text/plain")
+            .with_body(content)
+    }
+
+    pub fn json(content: String) -> Self {
+        Response::new()
+            .with_header("Content-Type", "application/json")
+            .with_body(&content)
+    }
+
+    pub fn not_found() -> Self {
+        Response::new()
+            .with_status(404)
+            .with_header("Content-Type", "text/html")
+            .with_body("<html><body><h1>404 Not Found</h1><p>The requested resource could not be found.</p></body></html>")
     }
 }
