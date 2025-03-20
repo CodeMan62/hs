@@ -169,6 +169,7 @@ async fn main() {
 }
 
 // Deprecated functions that we're replacing with our new routing system
+#[allow(dead_code)]
 fn create_response(request_lines: &[String]) -> String {
     if let Some(request_line) = request_lines.first() {
         let parts: Vec<&str> = request_line.split_whitespace().collect();
@@ -190,6 +191,7 @@ fn create_response(request_lines: &[String]) -> String {
     "HTTP/1.1 400 Bad Request\r\n\r\n".to_string()
 }
 
+#[allow(dead_code)]
 fn handle_request(request_lines: Vec<String>, stream: &mut TcpStream) {
     if let Some(request_line) = request_lines.first() {
         let parts: Vec<&str> = request_line.split_whitespace().collect();
